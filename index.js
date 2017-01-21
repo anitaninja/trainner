@@ -11,6 +11,7 @@ var mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost:27017/inventary'); // connect to our database
 var Author = require('./models/Author');
 var Book = require('./models/book');
+var sub = require('./models/subject');
 
 var router = express.Router();
 
@@ -22,46 +23,125 @@ router.use(function (req, res, next) {
 router.get('/', function (req, res) {
     res.json({message: 'welcome !!!'});
 });
+//------------------------------------------------------------------------
+router.route('/sub')
+
+    .get(function (req, res) {
+        sub.find().exec(function (err, ss) {
+            if (err)
+                res.send(err);
+
+            res.json(ss);
+        });
+    })
+
+    .post(function (req, res) {
+        var s = new sub();
+        s.sname = req.body.sname;
+        s.save(function (err) {
+            if (err)
+                res.send(err);
+            res.json({message: 'Subject Infomation Inserted in table !!'});
+        });
+    })
+
+
+            // delete  id
+            .delete(function (req, res) {
+                sub.remove({_id: req.params.sub_id},
+                    function (err, book) {
+                        if (err)
+                            res.send(err);
+
+                        res.json({message: 'Successfully deleted'});
+                    });
+            });
+
+//------------------------------------------------------------------------
+router.route('/author')
+    .get(function (req, res) {
+        Author.find().exec(function (err, authors) {
+            if (err)
+                res.send(err);
+
+            res.json(authors);
+        });
+    })
+
+        // delete  id
+        .delete(function (req, res) {
+            Author.remove({_id: req.params.Author_id},
+                function (err, book) {
+                    if (err)
+                        res.send(err);
+
+                    res.json({message: 'Successfully deleted'});
+                });
+        });
 
 //-----------------------------------------------------------------------------
 router.route('/book')
 
     .post(function (req, res) {
+        var author = new Author();
+        var flag = 0;
+        Author.findOne({aname: req.body.Author}).exec(function (err, obj) {
+            if (obj == null) {
+                author.aname = req.body.Author;
+                author.book = 1;
+                author.save(function (err, savedAuthor) {
+                    if (err)
+                        res.send(err);
+                    var book = new Book();
+                    book.bname = req.body.bname;
+                    book.price = req.body.price;
+                    book.a_id = savedAuthor._id;
 
 
+                    book.save(function (err, f) {
+                        if (err)
+                            res.send(err);
 
-        var author=new Author();
-        var flag=0;
-        Author.find({aname: author.aname}).exec(function(err,obj){
-            if(obj.aname !== req.body.Author) {
-                console.log('Author is not exist'+obj.aname);
-                flag=1;
+                        var s = new sub();
+                        s.sname = req.body.sname;
+                        s.book.push(f._id);
+                        s.save(function (err) {
+                            if (err)
+                                res.send(err);
+                            // s.save
+                            res.json({message: 'Book Infomation Inserted in both table !!'});
+                        });
+
+                    });
+
+                });
             }
-            else
-            {
-                console.log('Author is exist');
-            }
-        });
-        author.aname=req.body.Author;
-        author.book=1;
-        author.save(function (err, savedAuthor) {
-            if (err)
-                res.send(err);
+            else {
+                //console.log("--------",obj._id);
                 var book = new Book();
                 book.bname = req.body.bname;
                 book.price = req.body.price;
-                book.a_id = savedAuthor._id;
+                book.a_id = obj._id;
                 book.save(function (err) {
                     if (err)
                         res.send(err);
-                res.json({message: 'Book Infomation Inserted !!'});
-            });
+                    Book.find().populate('a_id').exec(function (err, books) {
+                        if (err)
+                            res.send(err);
+
+                        res.json(books);
+                    });
+                    //res.json({message: 'Author is exist !! Book Infomation Inserted !!'});
+                });
+
+            }
         });
+
     })
 
     // get all
     .get(function (req, res) {
-        Book.find().populate('a_id').exec(function (err, books) {
+        Book.find().select('-_id -__v').populate('a_id').exec(function (err, books) {
             if (err)
                 res.send(err);
 
