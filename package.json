@@ -1,5 +1,5 @@
 {
-  "name": "mongo",
+  "name": "image",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -13,6 +13,6 @@
     "express": "~4.0.0",
     "mongoose": "^4.6.8",
     "morgan": "~1.0.0",
-    "promise": "^7.1.1"
+    "multer": "^1.2.1"
   }
 }

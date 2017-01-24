@@ -3,7 +3,9 @@ var Schema       = mongoose.Schema;
 
 var aSchema   = new Schema({
     aname: String,
-    book:Number
+    book:Number,
+    Book:{type: [mongoose.Schema.Types.ObjectId],
+        ref: 'book'}
 });
 
 module.exports = mongoose.model('Author', aSchema);

@@ -1,121 +1,95 @@
+
 var express = require('express');
-var bodyParser = require('body-parser');
 var app = express();
+var router = express.Router();
+var multer  = require('multer');
+
 var morgan = require('morgan');
 app.use(morgan('dev'));
+var bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
-
-var port = process.env.PORT || 8081; // set our port
+var port = process.env.PORT || 8080; // set our port
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost:27017/inventary'); // connect to our database
-var Author = require('./models/Author');
-var Book = require('./models/book');
+mongoose.connect('mongodb://localhost:27017/Image'); // connect to our database
+var Img = require('./mongo');
 
-var router = express.Router();
+var storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, './public/ProductImages');
+    },
+    filename: function (req, file, cb) {
+        console.log("----");
+        var filename = Date.now() + file.originalname;
+        req.body.EmpImage = filename;
+        console.log(filename);
+        cb(null,filename);
+    }
+})
 
-router.use(function (req, res, next) {
-    console.log('Server strating .');
-    next();
-});
-
-router.get('/', function (req, res) {
-    res.json({message: 'welcome !!!'});
-});
-
-//-----------------------------------------------------------------------------
-router.route('/book')
-
-    .post(function (req, res) {
+var upload = multer({ storage: storage }).any();
 
 
-
-        var author=new Author();
-        var flag=0;
-        Author.find({aname: author.aname}).exec(function(err,obj){
-            if(obj.aname !== req.body.Author) {
-                console.log('Author is not exist'+obj.aname);
-                flag=1;
-            }
-            else
-            {
-                console.log('Author is exist');
-            }
-        });
-        author.aname=req.body.Author;
-        author.book=1;
-        author.save(function (err, savedAuthor) {
+router.route('/Emp')
+    .get( function (req, res, next) {
+        Img.find().exec(function (err, result) {
             if (err)
                 res.send(err);
-                var book = new Book();
-                book.bname = req.body.bname;
-                book.price = req.body.price;
-                book.a_id = savedAuthor._id;
-                book.save(function (err) {
-                    if (err)
-                        res.send(err);
-                res.json({message: 'Book Infomation Inserted !!'});
-            });
+
+            res.json(result);
         });
+
     })
 
-    // get all
-    .get(function (req, res) {
-        Book.find().populate('a_id').exec(function (err, books) {
+    .post(upload, function (req, res, next) {
+        var img=new Img();
+        img.EmpName=req.body.EmpName;
+        img.EmpImage=req.body.EmpImage;
+        img.EmpSalary=req.body.EmpSalary;
+        img.EmpDept=req.body.EmpDept;
+        var d = new Date;
+        console.log(d);
+        img.EmpJoinDate=d;
+
+        img.save(function (err) {
             if (err)
                 res.send(err);
-
-            res.json(books);
+            res.send("Employ Entry Done !! ");
         });
+    });
+//sort by Emp salary..,.
+router.route('/Empsort')
+    .post( function (req, res, next) {
+        Img.find({  "EmpDept" : req.body.EmpDept}).sort({"EmpSalary":1}).exec( function(err, doc) {
+            res.json(doc);
+
+        });
+
+    });
+
+//Find minimum Salary
+router.route('/Empmin')
+    .post( function (req, res, next) {
+       Img.find({  "EmpDept" : req.body.EmpDept}).sort({"EmpSalary":1}).exec( function(err, doc) {
+           res.json(doc[0]);
+
+       });
+
+    });
+
+//Find Maximum salary
+router.route('/Empmax')
+    .post( function (req, res, next) {
+        Img.find({  "EmpDept" : req.body.EmpDept}).sort({"EmpSalary":-1}).exec( function(err, doc) {
+
+            res.json(doc[0]);
+
+        });
+
     });
 
 
-router.route('/book/:book_id')
-
-// get
-    .get(function (req, res) {
-        Book.findById(req.params.book_id, function (err, book) {
-            if (err)
-                res.send(err);
-            res.json(book);
-        });
-    })
-
-    // update id
-    .put(function (req, res) {
-        Book.findById(req.params.book_id, function (err, book) {
-
-            if (err)
-                res.send(err);
-
-            book.bname = req.body.bname;
-            book.price = req.body.price;
-            book.Author = req.body.Author;
-            book.save(function (err) {
-                if (err)
-                    res.send(err);
-
-                res.json({message: 'Book info updated!'});
-            });
-
-        });
-    })
-
-    // delete  id
-    .delete(function (req, res) {
-        Book.remove({_id: req.params.book_id},
-            function (err, book) {
-                if (err)
-                    res.send(err);
-
-                res.json({message: 'Successfully deleted'});
-            });
-    });
-
-
-// REGISTER OUR ROUTES
 app.use('/', router);
+app.listen(3000);
 
-// START THE SERVER
-app.listen(port);
-console.log('Start server on port ' + port);
+
