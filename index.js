@@ -1,92 +1,92 @@
-
 var express = require('express');
 var app = express();
 var router = express.Router();
-var multer  = require('multer');
 
 var morgan = require('morgan');
 app.use(morgan('dev'));
+
 var bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
+
+// Load the full build.
+var _ = require('lodash');
+// Load the core build.
+var _ = require('lodash/core');
+// Load the FP build for immutable auto-curried iteratee-first data-last methods.
+var fp = require('lodash/fp');
+
 var port = process.env.PORT || 8080; // set our port
 var mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost:27017/Image'); // connect to our database
-var Img = require('./mongo');
+var db = require('./Database/db');
 
-var storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, './public/ProductImages');
-    },
-    filename: function (req, file, cb) {
-        console.log("----");
-        var filename = Date.now() + file.originalname;
-        req.body.EmpImage = filename;
-        console.log(filename);
-        cb(null,filename);
-    }
-})
-
-var upload = multer({ storage: storage }).any();
-
-
-router.route('/Emp')
-    .get( function (req, res, next) {
-        Img.find().exec(function (err, result) {
+router.route('/Data')
+    .get(function (req, res, next) {
+        db.find().exec(function (err, result) {
             if (err)
                 res.send(err);
 
             res.json(result);
         });
-
     })
+    .post(function (req, res) {
 
-    .post(upload, function (req, res, next) {
-        var img=new Img();
-        img.EmpName=req.body.EmpName;
-        img.EmpImage=req.body.EmpImage;
-        img.EmpSalary=req.body.EmpSalary;
-        img.EmpDept=req.body.EmpDept;
-        var d = new Date;
-        console.log(d);
-        img.EmpJoinDate=d;
-
-        img.save(function (err) {
+        var s = new db();
+        s.StudName = req.body.StudName;
+        s.StudStd = req.body.StudStd;
+        s.StudAdd = req.body.StudAdd;
+        s.StudCon = req.body.StudCon;
+        s.save(function (err) {
             if (err)
                 res.send(err);
-            res.send("Employ Entry Done !! ");
+            res.json({message: 'Student Infomation Inserted !!'});
         });
     });
-//sort by Emp salary..,.
-router.route('/Empsort')
-    .post( function (req, res, next) {
-        Img.find({  "EmpDept" : req.body.EmpDept}).sort({"EmpSalary":1}).exec( function(err, doc) {
-            res.json(doc);
+router.route('/lucky')
+    .get(function (req, res) {
+        db.find().exec(function (err, result) {
+            if (err)
+                res.send(err);
+            var index = Math.floor(Math.random() * (result.length));
 
-        });
-
-    });
-
-//Find minimum Salary
-router.route('/Empmin')
-    .post( function (req, res, next) {
-       Img.find({  "EmpDept" : req.body.EmpDept}).sort({"EmpSalary":1}).exec( function(err, doc) {
-           res.json(doc[0]);
-
-       });
-
-    });
-
-//Find Maximum salary
-router.route('/Empmax')
-    .post( function (req, res, next) {
-        Img.find({  "EmpDept" : req.body.EmpDept}).sort({"EmpSalary":-1}).exec( function(err, doc) {
-
-            res.json(doc[0]);
-
+            res.json(result[index]);
         });
 
     });
+router.route('/filter')
+    .post(function (req, res) {
+        db.find().exec(function (err, result) {
+            if (err)
+                res.send(err);
+            res.json(_.filter(result, {'StudStd': req.body.StudStd}));
+        });
+
+    });
+
+router.route('/group')
+    .post(function (req, res) {
+        db.find().exec(function (err, result) {
+            if (err)
+                res.send(err);
+            res.json(_.groupBy(result.StudStd, 'length'));
+        });
+
+    });
+
+router.route('/sort')
+    .get(function (req, res) {
+        db.find().exec(function (err, result) {
+            if (err)
+                res.send(err);
+
+            _.sortBy(result, [function (o) {
+                res.json(o.StudName)
+            }]);
+        });
+
+    });
+
 
 
 app.use('/', router);
