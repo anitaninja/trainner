@@ -1,0 +1,43 @@
+<html ng-app="app">
+
+<head>
+<title>Angular App</title>
+<script src="js/angular.js"></script>
+<style>
+	.old {background: yellow;}
+	.new {background: red;}
+</style>
+</head>
+
+
+<body>
+	<div ng-controller="MainController as main">
+	<ul>
+		<li 
+			ng-repeat="movie in main.likelist">
+			<p>{{movie.title}}</p>
+			<p>{{movie.year}}</p>
+			<button ng-click="main.unlikeMovie($index);">UnLike This!</button>
+		</li>
+	<ul>
+
+	<form ng-submit="main.addMovie();">
+	<input type="text" ng-model="main.movieTitle">
+	<input type="text" ng-model="main.movieYear">
+	<input type="submit" >
+	</form>
+		<li 
+			ng-repeat="movie in main.movieDetails">
+			<p>{{movie.title}}</p>
+			<p>{{movie.year}}</p>			
+			<button ng-click="main. likeMovie(movie);">Like This!</button>
+		</li>
+	</ul>
+	</div>
+
+<script src="js/app.js"></script>
+<script src="js/MainController.js"></script>
+</body>
+
+
+</html>
