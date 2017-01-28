@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.js"></script>
+<script src="./Empapp.js" type="text/javascript"></script>
+<script src="./Empcontroller.js" type="text/javascript"></script>
+<body>
+
+<div ng-app="myApp" ng-controller="controller">
+    <form novalidate ng-submit="createUser()" >
+        <center>
+            <fieldset>
+                <legend>Enter Infomation</legend>
+                <table>
+                    <tr>
+                        <td>
+                            Employee Name:
+                        </td>
+                        <td>
+                            <input type="text" ng-model="formData.name"></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Employee Profile:
+                        </td>
+                        <td>
+                            <input type="text"></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Employee Salary:
+                        </td>
+                        <td>
+                            <input type="text" ng-model="formData.salary"></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Employee Department:
+                        </td>
+                        <td>
+                            <input type="text" ng-model="formData.dept"></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Employee JoinDate:
+                        </td>
+                        <td>
+                            <input type="text"></td>
+                    </tr>
+                    <tr>
+
+                        <td>
+                            <button type="submit">Submit</button>
+                        </td>
+                    </tr>
+
+                </table>
+            </fieldset>
+        </center>
+    </form>
+    <center><br><br>
+        <table border="5px">
+            <tr>
+                <th>EmpName</th>
+                <th>EmpSalary</th>
+                <th>Department</th>
+                <th>Update</th>
+                <th>Delete</th>
+            </tr>
+            <tr  ng-repeat = "i in datas">
+                <td>{{i._id}}</td>
+                <td>{{i.EmpName}}</td>
+                <td>{{i.EmpSalary}}</td>
+                <td>{{i.EmpDept}}</td>
+                <td><button name="Edit"ng-click="updateUser(i._id)">Edit</button></td>
+                <td><button name="delete" ng-click="deleteUser(i._id)">Delete</button></td>
+
+
+            </tr>
+        </table>
+    </center>
+
+</div>
+
+</body>
+</html>
