@@ -1,0 +1,54 @@
+<html ng-app="app">
+
+<head>
+<title>Angular App</title>
+<script src="js/angular.js"></script>
+<style>
+	.old {background: yellow;}
+	.new {background: red;}
+</style>
+</head>
+
+
+<body>
+	<div ng-controller="MainController as main">
+		{{main.name}}
+	</div>
+	<div ng-controller="MainController as main">
+	<ul>
+		<li 
+			ng-class="{
+				old: movie.year < '2016',
+				new: movie.year > '2015'
+			}"
+			ng-repeat="movie in main.movieDetails">
+			<p>{{movie.title}}</p>
+			<p>{{movie.year}}</p>
+			<p ng-if="movie.popular">This Is Popular</p>
+			<p ng-hide="movie.year < '2016'">This is New Movie</p>
+			<div ng-switch="movie.category">
+				<div ng-switch-when="fantasy">
+					This Movie is Fantasy
+				</div>
+				<div ng-switch-when="action">
+					This Movie is Action
+				</div>
+				<div ng-switch-when="thriller">
+					This Movie is Thriller
+				</div>
+				<div ng-switch-default>
+					This Movie has no category
+				</div>
+			</div>
+			<img ng-src="img/{{movie.imgsrc}}">
+			<input type="text" ng-model="movie.year">
+		</li>
+	</ul>
+	</div>
+
+<script src="js/app.js"></script>
+<script src="js/MainController.js"></script>
+</body>
+
+
+</html>
