@@ -1,93 +1,63 @@
+
 var express = require('express');
 var app = express();
 var router = express.Router();
+var multer  = require('multer');
 
 var morgan = require('morgan');
 app.use(morgan('dev'));
-
 var bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
+app.use(express.static(__dirname + '/public'));
+app.use('./public', express.static(__dirname + './public'));
 
-// Load the full build.
-var _ = require('lodash');
-// Load the core build.
-var _ = require('lodash/core');
-// Load the FP build for immutable auto-curried iteratee-first data-last methods.
-var fp = require('lodash/fp');
-
-var port = process.env.PORT || 8080; // set our port
+//var port = process.env.PORT ||; // set our port
 var mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost:27017/Image'); // connect to our database
-var db = require('./Database/db');
+var Img = require('./mongo');
 
-router.route('/Data')
-    .get(function (req, res, next) {
-        db.find().exec(function (err, result) {
+router.route('/Emp')
+    .get( function (req, res, next) {
+        Img.find().exec(function (err, result) {
             if (err)
                 res.send(err);
 
             res.json(result);
         });
+
     })
+
     .post(function (req, res) {
+        var img=new Img();
+        img.EmpName=req.body.EmpName;
+        img.EmpSalary=req.body.EmpSalary;
+        img.EmpDept=req.body.EmpDept;
 
-        var s = new db();
-        s.StudName = req.body.StudName;
-        s.StudStd = req.body.StudStd;
-        s.StudAdd = req.body.StudAdd;
-        s.StudCon = req.body.StudCon;
-        s.save(function (err) {
+        img.save(function (err) {
             if (err)
                 res.send(err);
-            res.json({message: 'Student Infomation Inserted !!'});
+            res.send("Employ Entry Done !!!! ");
         });
-    });
-router.route('/lucky')
-    .get(function (req, res) {
-        db.find().exec(function (err, result) {
-            if (err)
-                res.send(err);
-            var index = Math.floor(Math.random() * (result.length));
-
-            res.json(result[index]);
-        });
+    })
+    .delete(function (req, res) {
 
     });
-router.route('/filter')
-    .post(function (req, res) {
-        db.find().exec(function (err, result) {
-            if (err)
-                res.send(err);
-            res.json(_.filter(result, {'StudStd': req.body.StudStd}));
-        });
-
-    });
-
-router.route('/group')
-    .post(function (req, res) {
-        db.find().exec(function (err, result) {
-            if (err)
-                res.send(err);
-            res.json(_.groupBy(result.StudStd, 'length'));
-        });
-
-    });
-
-router.route('/sort')
-    .get(function (req, res) {
-        db.find().exec(function (err, result) {
+router.delete('/Emp/:id', function(req, res) {
+    var img=new Img();
+    Img.remove({_id: req.params._id},
+        function (err, book) {
             if (err)
                 res.send(err);
 
-            _.sortBy(result, [function (o) {
-                res.json(o.StudName)
-            }]);
+            res.json({message: 'Successfully deleted'});
         });
+});
 
+router.route('/page')
+    .get(function (req, res, next) {
+        res.sendfile(__dirname + '/DataEntry.html');
     });
-
-
 
 app.use('/', router);
 app.listen(3000);
