@@ -1,4 +1,13 @@
 
+/**
+ * Created by lcom64_one on 1/27/2017.
+ */
+angular
+    .module('myApp')
+    .controller('controller', controller);
+/** @ngInject */
+function controller($scope, $http) {
+
 function controller($scope, $http) {
 
     var flag = 0;
@@ -23,6 +32,7 @@ function controller($scope, $http) {
             .error(function (data) {
                 console.log('Error: ' + data);
             });
+
 
         var flag=0;
     //Load data
@@ -55,12 +65,15 @@ function controller($scope, $http) {
                 $scope.users = data;
                 console.log(data);
 
+
+
                 $scope.formData = {
                     name: $scope.users.EmpName,
                     salary: $scope.users.EmpSalary,
                     dept: $scope.users.EmpDept
                 }
                 flag = 1;
+
                 $scope.formData={
                         name :  $scope.users.EmpName,
                        salary : $scope.users.EmpSalary,
@@ -75,10 +88,13 @@ function controller($scope, $http) {
     };
     $scope.createUser = function () {
 
+
+
         if (flag == 1) {
             flag = 0;
 
             $http.put('/Emp/' + $scope._id, $scope.formData)
+
 
         if(flag==1)
         {
@@ -106,6 +122,7 @@ function controller($scope, $http) {
                 $scope.formData.dept = "";
                 console.log('Data inserted');
 
+
         // Saves the user data to the db
         $http.post('/Emp', userData)
             .success(function (data) {
@@ -115,7 +132,6 @@ function controller($scope, $http) {
                 $scope.formData.dept = "";
 
                 console.log('Data inserted');
-
 
             })
             .error(function (data) {
