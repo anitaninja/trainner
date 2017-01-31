@@ -6,7 +6,7 @@
 <body>
 
 <div ng-app="myApp" ng-controller="controller">
-    <form novalidate ng-submit="createUser()" >
+    <form name="myForm" novalidate ng-submit="createUser(picFile)">
         <center>
             <fieldset>
                 <legend>Enter Infomation</legend>
@@ -22,8 +22,11 @@
                         <td>
                             Employee Profile:
                         </td>
-                        <td>
-                            <input type="text"></td>
+                        <td><input type="file" ngf-select="" ng-model="formData.pic" onchange="angular.element(this).scope().vm.photoChanged(this.files)" ngf-accept="'image/*'" required="">
+
+
+
+                        </td>
                     </tr>
                     <tr>
                         <td>
@@ -61,18 +64,24 @@
         <table border="5px">
             <tr>
                 <th>EmpName</th>
+                <th>Profile</th>
                 <th>EmpSalary</th>
                 <th>Department</th>
                 <th>Update</th>
                 <th>Delete</th>
             </tr>
-            <tr  ng-repeat = "i in datas">
-                <td>{{i._id}}</td>
+            <tr ng-repeat="i in datas">
+                <!--<td>{{i._id}}</td>-->
                 <td>{{i.EmpName}}</td>
+                <td>{{i.EmpImage}}</td>
                 <td>{{i.EmpSalary}}</td>
                 <td>{{i.EmpDept}}</td>
-                <td><button name="Edit"ng-click="updateUser(i._id)">Edit</button></td>
-                <td><button name="delete" ng-click="deleteUser(i._id)">Delete</button></td>
+                <td>
+                    <button name="Edit" ng-click="updateUser(i._id)">Edit</button>
+                </td>
+                <td>
+                    <button name="delete" ng-click="deleteUser(i._id)">Delete</button>
+                </td>
 
 
             </tr>
