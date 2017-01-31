@@ -1,10 +1,15 @@
 /**
  * Created by lcom64_one on 1/28/2017.
  */
+angular.module('datepickerBasicUsage', ['ngMaterial', 'ngMessages']).controller('AppCtrl', function () {
+    this.myDate = new Date();
+    this.isOpen = false;
+});
 angular
     .module('myApp')
     .controller('controller', controller);
 /** @ngInject */
+
 function controller($scope, $http) {
     $scope.flag = 0;
 
@@ -30,7 +35,6 @@ function controller($scope, $http) {
                 console.log('Error: ' + data);
             });
     };
-
     $scope.updateUser = function (id) {
 
         $http.get('/Emp/' + id)
@@ -41,7 +45,8 @@ function controller($scope, $http) {
                     _id: $scope.users._id,
                     name: $scope.users.EmpName,
                     salary: $scope.users.EmpSalary,
-                    dept: $scope.users.EmpDept
+                    dept: $scope.users.EmpDept,
+                    date:$scope.users.EmpJdate
                 }
                 $scope.flag = 1;
                 console.log(data);
@@ -49,15 +54,19 @@ function controller($scope, $http) {
 
 
     };
+
+    $scope.photoUpload = function (files) {
+        $scope.imgFile = files[0];
+    };
+
+
     $scope.createUser = function () {
 
-        console.log($scope.formData.pic);
-        // Grabs all of the text box fields
         var userData = {
             EmpName: $scope.formData.name,
-            EmpImage: $scope.formData.pic,
+            //      EmpImage: $scope.imgFile,
             EmpSalary: parseInt($scope.formData.salary),
-            EmpDept: $scope.formData.dept
+            EmpDept: $scope.formData.dept,
 
         };
         if ($scope.flag == 1) {
@@ -73,17 +82,31 @@ function controller($scope, $http) {
                 });
         }
         else {
-            // Saves the user data to the db
-            $http.post('/Emp', userData)
-                .success(function (data) {
+
+            var file = $scope.myFile;
+            var uploadUrl = "/Emp";
+            var fd = new FormData();
+
+            fd.append('EmpName', $scope.formData.name);
+            fd.append('EmpImage', file);
+            fd.append('EmpSalary', parseInt($scope.formData.salary));
+            fd.append('EmpDept', $scope.formData.dept);
+            fd.append('Empgender', $scope.formData.gender);
+            fd.append('EmpJdate', $scope.formData.date);
+
+            $http.post(uploadUrl, fd, {
+                transformRequest: angular.identity,
+                headers: {'Content-Type': undefined}
+            })
+                .success(function () {
                     $scope.formData.name = "";
                     $scope.formData.salary = "";
-                    $scope.formData.dept = "";
+                    $scope.formData.date = "";
                     console.log('Data inserted');
-                    console.log(data);
+                    console.log("success!!");
                 })
-                .error(function (data) {
-                    console.log('Error: ' + data);
+                .error(function () {
+                    console.log("error!!");
                 });
         }
 

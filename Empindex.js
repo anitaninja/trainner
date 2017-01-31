@@ -6,13 +6,12 @@ var multer = require('multer');
 var morgan = require('morgan');
 app.use(morgan('dev'));
 var bodyParser = require('body-parser');
-app.use(bodyParser.json({limit: '50mb'}));
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.json({limit: '50mb'}));
 app.use(bodyParser.json());
+
 app.use(express.static(__dirname + '/public'));
 app.use('./public', express.static(__dirname + './public'));
-
-//var port = process.env.PORT ||; // set our port
 var mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost:27017/Image'); // connect to our database
 var Img = require('./Empmongo');
@@ -28,10 +27,10 @@ var storage = multer.diskStorage({
         console.log(req.body.EmpImage);
         cb(null, filename);
     }
-})
+});
 
 var upload = multer({storage: storage}).any();
-
+//app.use(upload.array());
 
 router.route('/Emp')
     .get(function (req, res, next) {
@@ -44,12 +43,16 @@ router.route('/Emp')
 
     })
 
-    .post(upload,function (req, res) {
+    .post( upload,function (req, res) {
+        var files = req.files;
+        console.log(files);
         var img = new Img();
         img.EmpName = req.body.EmpName;
         img.EmpImage=req.body.EmpImage;
         img.EmpSalary = req.body.EmpSalary;
         img.EmpDept = req.body.EmpDept;
+        img.Empgender=req.body.Empgender;
+        img.EmpJdate=req.body.EmpJdate;
 
         img.save(function (err) {
             if (err)
@@ -57,14 +60,14 @@ router.route('/Emp')
             res.send("Employ Entry Done !!!! ");
         });
     });
-router.put('/Emp/:id', function (req, res) {
+    router.put('/Emp/:id', function (req, res) {
     Img.findById(req.params.id, function (err, img) {
         if (err)
             res.send(err);
 
         img.EmpName = req.body.EmpName;
         img.EmpSalary = req.body.EmpSalary;
-        img.EmpDept = req.body.EmpDept;
+        img.EmpJdate = req.body.EmpJdate;
         img.save(function (err) {
             if (err)
                 res.send(err);
