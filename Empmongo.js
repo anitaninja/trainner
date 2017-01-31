@@ -5,6 +5,8 @@ var pSchema   = new Schema({
     EmpName: String,
     EmpImage:String,
     EmpSalary:Number,
-    EmpDept:String
+    EmpDept:String,
+    Empgender:String,
+    EmpJdate:String
 });
 module.exports = mongoose.model('Img', pSchema);
