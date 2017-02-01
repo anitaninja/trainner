@@ -38,22 +38,29 @@
                     </tr>
                     <tr>
                         <td>
-                            Employee Salary:
+                            Email Id:
                         </td>
                         <td>
-                            <input type="text" placeholder="Enter salary" ng-model="formData.salary"></td>
+                            <input type="text" placeholder="Email Id" ng-model="formData.email"></td>
                     </tr>
                     <tr>
                         <td>
-                            Employee Department:
+                            State :
                         </td>
                         <td>
-                            <select ng-model="formData.dept">
-                                <option value="">--Select--</option>
-                                <option value="HR">HR</option>
-                                <option value="computer">computer</option>
-                                <option value="It">It</option>
-                                <option value="Mechnical">Mechnical</option>
+                            <select ng-model="formData.state">
+                                <option value="">--State--</option>
+                                <option ng-repeat="s in slists" id="{{s.State_Id}}" value="{{s.State_Name}}">{{s.State_Name}}</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            City :
+                        </td>
+                        <td>
+                            <select ng-model="formData.city">
+                                <option value="">--City--</option>
                             </select>
                         </td>
                     </tr>
@@ -70,7 +77,7 @@
                     </tr>
                     <tr>
                         <td>
-                            Employee JoinDate:
+                            Employee BOD:
                         </td>
                         <td>
                             <datepicker date-format="yyyy-MM-dd" selector="form-control">
@@ -81,6 +88,15 @@
                                     </span>
                                 </div>
                             </datepicker>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Active :
+                        </td>
+                        <td>
+                            <input type="checkbox" ng-model="formData.active">
+
                         </td>
                     </tr>
                     <tr>
@@ -99,10 +115,12 @@
             <tr>
                 <th>EmpName</th>
                 <th>Profile</th>
-                <th>EmpSalary</th>
-                <th>Department</th>
+                <th>Email Id</th>
+                <th>State</th>
+                <th>City</th>
                 <th>Gender</th>
-                <th>Joining Date</th>
+                <th>BOD</th>
+                <th>Active</th>
                 <th>Update</th>
                 <th>Delete</th>
             </tr>
@@ -110,10 +128,12 @@
                 <!--<td>{{i._id}}</td>-->
                 <td>{{i.EmpName}}</td>
                 <td><img class="profile-pic" src="./ProductImages/{{i.EmpImage}}"/></td>
-                <td>{{i.EmpSalary}}</td>
-                <td>{{i.EmpDept}}</td>
+                <td>{{i.EmpEmail}}</td>
+                <td>{{i.EmpState}}</td>
+                <td>{{i.EmpCity}}</td>
                 <td>{{i.Empgender}}</td>
-                <td>{{i.EmpJdate}}</td>
+                <td>{{i.EmpBOD}}</td>
+                <td>{{i.EmpActive}}</td>
                 <td>
                     <button name="Edit" ng-click="updateUser(i._id)">Edit</button>
                 </td>

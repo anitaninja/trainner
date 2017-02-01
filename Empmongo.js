@@ -4,9 +4,11 @@ var Schema       = mongoose.Schema;
 var pSchema   = new Schema({
     EmpName: String,
     EmpImage:String,
-    EmpSalary:Number,
-    EmpDept:String,
+    EmpEmail:String,
+    EmpState:String,
+    EmpCity:String,
     Empgender:String,
-    EmpJdate:String
+    EmpBOD:String,
+    EmpActive:Boolean
 });
 module.exports = mongoose.model('Img', pSchema);
