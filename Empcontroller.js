@@ -13,7 +13,6 @@ angular
 
 function controller($scope, $http) {
     $scope.flag = 0;
-
     //Load State
     $http.get('/State')
         .success(function (data) {
@@ -39,17 +38,12 @@ function controller($scope, $http) {
         .error(function (data) {
             console.log('Error: ' + data);
         });
+
     //Load State
     $scope.FillCity = function (id) {
-        $http.delete('/Emp/' + id)
+        $http.get('/filter/' + id)
             .success(function (data) {
-                $scope.datas = data;
-
-                console.log(data);
-                $http.get('/Emp')
-                    .success(function (data) {
-                        $scope.datas = data;
-                    })
+                $scope.citys = data;
             })
             .error(function (data) {
                 console.log('Error: ' + data);
@@ -81,7 +75,7 @@ function controller($scope, $http) {
                     name: $scope.users.EmpName,
                     salary: $scope.users.EmpSalary,
                     dept: $scope.users.EmpDept,
-                    date:$scope.users.EmpJdate
+                    date: $scope.users.EmpJdate
                 }
                 $scope.flag = 1;
                 console.log(data);
@@ -143,8 +137,8 @@ function controller($scope, $http) {
             })
                 .success(function () {
                     $scope.formData.name = "";
-                    $scope.formData.email="";
-                    $scope.formData.state="";
+                    $scope.formData.email = "";
+                    $scope.formData.state = "";
                     $scope.formData.city = "";
                     $scope.formData.date = "";
                     console.log('Data inserted');

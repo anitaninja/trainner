@@ -1,31 +1,18 @@
-<!DOCTYPE html>
-<html ng-app="app">
-
+<!doctype html>
+<html ng-app="modalApp">
 <head>
-    <meta charset="UTF-8">
-    <title>Anguler</title>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+    <title>Modals with Angular and Ui-Router</title>
+    <link rel="stylesheet" href="css/app.css" />
+    <script type="text/javascript" src="js/lib/angular.min.js"></script>
+    <script type="text/javascript" src="js/lib/angular-ui-router.min.js"></script>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="js/app.js"></script>
 </head>
-<body><center>
+<body>
+<h3>Pusheen Hoodie</h3>
+<p>Now you too can look like Pusheen!</p>
+<button ui-sref="Modal.confirmAddToCart">Add to cart</button>
 
-    <fieldset><legend align="center"><h1>Wel-Come {{name}}</h1></legend>
-     <table> <tr><td>
-         <p>Name  </td>
-         <td><input type="text" ng-model="name" placeholder="Enter name here"></td></p></tr>
-        <tr><td>
-            Fevorit Color </td><td><div ng-app="" ng-init="myCol='white'"><input style="background-color:{{myCol}}" ng-model="myCol" value="{{myCol}}"></div>
-         </td>
-        </td></tr>
-
-     </table>
-    </fieldset>
-    <div ng-controller="MyController">
-        {{name}}
-    </div>
-    <script src="angular.js" type="text/javascript"></script>
-    <script src="app.js" type="text/javascript"></script>
-    <script src="MyController.js" type="text/javascript"></script>
-
-    </center>
+<div ui-view="modal" autoscroll="false"></div>
 </body>
 </html>

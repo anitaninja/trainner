@@ -34,6 +34,20 @@ var object = require('lodash/fp/object');
 var at = require('lodash/at');
 var curryN = require('lodash/fp/curryN');
 
+var storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, './public/ProductImages');
+    },
+    filename: function (req, file, cb) {
+        console.log("----");
+        var filename = Date.now() + file.originalname;
+        req.body.EmpImage = filename;
+        console.log(req.body.EmpImage);
+        cb(null, filename);
+    }
+});
+
+var upload = multer({storage: storage}).any();
 //app.use(upload.array());
 
 router.route('/State')
@@ -96,14 +110,15 @@ router.route('/City')
             res.send("City Entry Done !!!! ");
         });
     });
-router.route('/filter')
-    .post(function (req, res) {
-            City.find().exec(function (err, result) {
+router.route('/filter/:id')
+    .get(function (req, res) {
+            City.find({ State_Id: { $eq: req.params.id } }).exec(function (err, result) {
                     if (err)
                             res.send(err);
-                  res.json(_.filter(result, {'State_Id': req.params.State_Id}));
+                         res.json(result);
+         });
     });
-    });
+
 router.route('/Emp')
     .get(function (req, res, next) {
         Img.find().exec(function (err, result) {
