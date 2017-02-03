@@ -15,9 +15,9 @@ app.use('./public', express.static(__dirname + './public'));
 
 var mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost:27017/Image'); // connect to our database
-var Img = require('./Empmongo');
-var State = require('./Empstate');
-var City = require('./Empcity');
+var Img = require('./moduls/Empmongo');
+var State = require('./moduls/Empstate');
+var City = require('./moduls/Empcity');
 
 // Load the full build.
 var _ = require('lodash');
@@ -36,7 +36,7 @@ var curryN = require('lodash/fp/curryN');
 
 var storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, './public/ProductImages');
+        cb(null, './upload/EmpProfilePic');
     },
     filename: function (req, file, cb) {
         console.log("----");
@@ -88,14 +88,14 @@ router.route('/City')
 
     .delete(function (req, res) {
 
-    City.remove({_id: req.params.id},
-        function (err) {
-            if (err)
-                res.send(err);
+            City.remove({_id: req.params.id},
+                function (err) {
+                    if (err)
+                        res.send(err);
 
-            res.json({message: 'City Successfully deleted'});
-        });
-    }
+                    res.json({message: 'City Successfully deleted'});
+                });
+        }
     )
     .post(function (req, res) {
 
@@ -112,11 +112,11 @@ router.route('/City')
     });
 router.route('/filter/:id')
     .get(function (req, res) {
-            City.find({ State_Id: { $eq: req.params.id } }).exec(function (err, result) {
-                    if (err)
-                            res.send(err);
-                         res.json(result);
-         });
+        City.find({ State_Id: { $eq: req.params.id } }).exec(function (err, result) {
+            if (err)
+                res.send(err);
+            res.json(result);
+        });
     });
 
 router.route('/Emp')
@@ -124,8 +124,8 @@ router.route('/Emp')
         Img.find().exec(function (err, result) {
             if (err)
                 res.send(err);
-
-            res.json(result);
+            res.send(result);
+            console.log(result);
         });
 
     })
@@ -150,23 +150,7 @@ router.route('/Emp')
             res.send("Employ Entry Done !!!! ");
         });
     });
-    router.put('/Emp/:id', function (req, res) {
-    Img.findById(req.params.id, function (err, img) {
-        if (err)
-            res.send(err);
 
-        img.EmpName = req.body.EmpName;
-        img.EmpSalary = req.body.EmpSalary;
-        img.EmpJdate = req.body.EmpJdate;
-        img.save(function (err) {
-            if (err)
-                res.send(err);
-
-            res.json(img);
-        });
-
-    });
-});
 router.delete('/Emp/:id', function (req, res) {
     var img = new Img();
     Img.remove({_id: req.params.id},
@@ -177,15 +161,7 @@ router.delete('/Emp/:id', function (req, res) {
             res.json({message: 'Successfully deleted'});
         });
 });
-router.get('/City/:State_Id', function (req, res, next) {
-    City.findById(req.params.id, function (err, user) {
-        if (err)
-            res.send(err);
 
-        res.json(user);
-    });
-
-})
 router.get('/Emp/:id', function (req, res, next) {
     Img.findById(req.params.id, function (err, user) {
         if (err)
@@ -195,12 +171,12 @@ router.get('/Emp/:id', function (req, res, next) {
     });
 
 })
-router.route('/DataEntry')
+router.route('/EmpDataEntry')
     .get(function (req, res, next) {
-        res.sendfile(__dirname + '/EmpDataEntry.html');
+        res.sendfile(__dirname +'/public' +'/views'+'/page'+ '/register.html');
     });
 
 app.use('/', router);
-app.listen(8080);
+app.listen(3000);
 
 
