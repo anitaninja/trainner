@@ -10,8 +10,25 @@ angular
     .controller('controller', controller);
 /** @ngInject */
 
+
 function controller($scope, $http) {
     $scope.flag = 0;
+    //Load State
+    $http.get('/State')
+        .success(function (data) {
+            $scope.slists = data;
+        })
+        .error(function (data) {
+            console.log('Error: ' + data);
+        });
+    //Load State
+    $http.get('/City')
+        .success(function (data) {
+            $scope.clists = data;
+        })
+        .error(function (data) {
+            console.log('Error: ' + data);
+        });
 
     //Load data
     $http.get('/Emp')
@@ -21,10 +38,22 @@ function controller($scope, $http) {
         .error(function (data) {
             console.log('Error: ' + data);
         });
+
+    //Load State
+    $scope.FillCity = function (id) {
+        $http.get('/filter/' + id)
+            .success(function (data) {
+                $scope.citys = data;
+            })
+            .error(function (data) {
+                console.log('Error: ' + data);
+            });
+    };
     $scope.deleteUser = function (id) {
         $http.delete('/Emp/' + id)
             .success(function (data) {
                 $scope.datas = data;
+
                 console.log(data);
                 $http.get('/Emp')
                     .success(function (data) {
@@ -46,7 +75,7 @@ function controller($scope, $http) {
                     name: $scope.users.EmpName,
                     salary: $scope.users.EmpSalary,
                     dept: $scope.users.EmpDept,
-                    date:$scope.users.EmpJdate
+                    date: $scope.users.EmpJdate
                 }
                 $scope.flag = 1;
                 console.log(data);
@@ -62,17 +91,23 @@ function controller($scope, $http) {
 
     $scope.createUser = function () {
 
-        var userData = {
-            EmpName: $scope.formData.name,
-            //      EmpImage: $scope.imgFile,
-            EmpSalary: parseInt($scope.formData.salary),
-            EmpDept: $scope.formData.dept,
+        var file = $scope.myFile;
+        var uploadUrl = "/Emp";
+        var fd = new FormData();
 
-        };
+        fd.append('EmpName', $scope.formData.name);
+        fd.append('EmpImage', file);
+        fd.append('EmpEmail', $scope.formData.email);
+        fd.append('EmpState', $scope.formData.State);
+        fd.append('EmpCity', $scope.formData.city);
+        fd.append('Empgender', $scope.formData.gender);
+        fd.append('EmpBOD', $scope.formData.date);
+        fd.append('EmpActive', $scope.formData.active);
+
         if ($scope.flag == 1) {
             $scope.flag = 0;
 
-            $http.put('/Emp/' + $scope.formData._id, userData)
+            $http.put('/Emp/' + $scope.formData._id, fd)
                 .success(function (data) {
                     console.log(data);
                     console.log('Data updated');
@@ -89,10 +124,12 @@ function controller($scope, $http) {
 
             fd.append('EmpName', $scope.formData.name);
             fd.append('EmpImage', file);
-            fd.append('EmpSalary', parseInt($scope.formData.salary));
-            fd.append('EmpDept', $scope.formData.dept);
+            fd.append('EmpEmail', $scope.formData.email);
+            fd.append('EmpState', $scope.formData.state);
+            fd.append('EmpCity', $scope.formData.city);
             fd.append('Empgender', $scope.formData.gender);
-            fd.append('EmpJdate', $scope.formData.date);
+            fd.append('EmpBOD', $scope.formData.date);
+            fd.append('EmpActive', $scope.formData.active);
 
             $http.post(uploadUrl, fd, {
                 transformRequest: angular.identity,
@@ -100,7 +137,9 @@ function controller($scope, $http) {
             })
                 .success(function () {
                     $scope.formData.name = "";
-                    $scope.formData.salary = "";
+                    $scope.formData.email = "";
+                    $scope.formData.state = "";
+                    $scope.formData.city = "";
                     $scope.formData.date = "";
                     console.log('Data inserted');
                     console.log("success!!");
