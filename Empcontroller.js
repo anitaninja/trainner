@@ -1,68 +1,73 @@
 /**
  * Created by lcom64_one on 1/28/2017.
  */
-angular.module('datepickerBasicUsage', ['ngMaterial', 'ngMessages']).controller('AppCtrl', function () {
-    this.myDate = new Date();
-    this.isOpen = false;
-});
-angular
-    .module('myApp')
-    .controller('controller', controller);
+
+angular.module('app',[])
+    .controller('registerController', registerController);
 /** @ngInject */
 
-
-function controller($scope, $http) {
+registerController.$inject = ['$scope', '$http'];
+function registerController($scope, $http) {
     $scope.flag = 0;
     //Load State
-    $http.get('/State')
-        .success(function (data) {
-            $scope.slists = data;
-        })
-        .error(function (data) {
-            console.log('Error: ' + data);
+    $scope.loadState=function(){
+
+        $http({
+            method: 'GET',
+            url: '/State'
+        }).then(function (data){
+
+            $scope.slists = data.data;
+            console.log($scope.slists)
+        },function (error){
+            console.log('Error: ' + $scope.slists);
         });
-    //Load State
-    $http.get('/City')
-        .success(function (data) {
-            $scope.clists = data;
-        })
-        .error(function (data) {
-            console.log('Error: ' + data);
-        });
+    }
+
+    $scope.loadState();
+    //Load city
+
+    $http({
+        method: 'GET',
+        url: '/City'
+    }).then(function (data){
+        $scope.clists = data;
+    },function (error){
+        console.log('Error: ' + data);
+    });
 
     //Load data
-    $http.get('/Emp')
-        .success(function (data) {
-            $scope.datas = data;
-        })
-        .error(function (data) {
-            console.log('Error: ' + data);
-        });
+    $http({
+        method: 'GET',
+        url: '/Emp'
+    }).then(function (data){
+        $scope.datas = data.data;
+        debugger
+    },function (error){
+        console.log('Error: ');
+    });
 
     //Load State
     $scope.FillCity = function (id) {
-        $http.get('/filter/' + id)
-            .success(function (data) {
-                $scope.citys = data;
-            })
-            .error(function (data) {
-                console.log('Error: ' + data);
-            });
+        $http({
+            method: 'GET',
+            url: '/filter/'+id
+        }).then(function (data){
+            $scope.citys = data;
+        },function (error){
+            console.log('Error: ' + data);
+        });
     };
     $scope.deleteUser = function (id) {
-        $http.delete('/Emp/' + id)
-            .success(function (data) {
-                $scope.datas = data;
 
-                console.log(data);
-                $http.get('/Emp')
-                    .success(function (data) {
-                        $scope.datas = data;
-                    })
-            })
-            .error(function (data) {
-                console.log('Error: ' + data);
-            });
+        $http({
+            method: 'DELETE',
+            url: '/Emp/'+id
+        }).then(function (data){
+            $scope.datas = data;
+        },function (error){
+            console.log('Error: ' + data);
+        });
     };
     $scope.updateUser = function (id) {
 
@@ -130,6 +135,15 @@ function controller($scope, $http) {
             fd.append('Empgender', $scope.formData.gender);
             fd.append('EmpBOD', $scope.formData.date);
             fd.append('EmpActive', $scope.formData.active);
+
+            $http({
+                method: 'POST',
+                url: '/Emp'
+            }).then(function (success){
+                $scope.datas = data;
+            },function (error){
+                console.log('Error: ' + data);
+            });
 
             $http.post(uploadUrl, fd, {
                 transformRequest: angular.identity,
