@@ -36,7 +36,7 @@ var curryN = require('lodash/fp/curryN');
 
 var storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, './upload/EmpProfilePic');
+        cb(null, './Upload_Image/EmpProfilePic');
     },
     filename: function (req, file, cb) {
         console.log("----");
