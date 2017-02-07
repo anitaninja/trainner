@@ -2,24 +2,25 @@
  * Created by lcom64_one on 1/28/2017.
  */
 
-angular.module('app',[])
-    .controller('registerController', registerController);
+angular.module('app', ['ui.bootstrap'])
+    .controller('registerController', registerController)
+    .controller('ModalInstanceCtrl', ModalInstanceCtrl);
 /** @ngInject */
 
-registerController.$inject = ['$scope', '$http'];
-function registerController($scope, $http) {
+registerController.$inject = ['$scope', '$http','$modal']
+function registerController($scope, $http,$modal) {
     $scope.flag = 0;
     //Load State
-    $scope.loadState=function(){
+    $scope.loadState = function () {
 
         $http({
             method: 'GET',
             url: '/State'
-        }).then(function (data){
+        }).then(function (data) {
 
             $scope.slists = data.data;
             console.log($scope.slists)
-        },function (error){
+        }, function (error) {
             console.log('Error: ' + $scope.slists);
         });
     }
@@ -30,9 +31,9 @@ function registerController($scope, $http) {
     $http({
         method: 'GET',
         url: '/City'
-    }).then(function (data){
+    }).then(function (data) {
         $scope.clists = data;
-    },function (error){
+    }, function (error) {
         console.log('Error: ' + data);
     });
 
@@ -40,10 +41,9 @@ function registerController($scope, $http) {
     $http({
         method: 'GET',
         url: '/Emp'
-    }).then(function (data){
+    }).then(function (data) {
         $scope.datas = data.data;
-        debugger
-    },function (error){
+    }, function (error) {
         console.log('Error: ');
     });
 
@@ -51,77 +51,51 @@ function registerController($scope, $http) {
     $scope.FillCity = function (id) {
         $http({
             method: 'GET',
-            url: '/filter/'+id
-        }).then(function (data){
-            $scope.citys = data;
-        },function (error){
-            console.log('Error: ' + data);
+            url: '/filter/' + id
+        }).then(function (data) {
+            $scope.citys = data.data;
+        }, function (error) {
+            console.log('Error: ');
         });
     };
     $scope.deleteUser = function (id) {
 
         $http({
             method: 'DELETE',
-            url: '/Emp/'+id
-        }).then(function (data){
+            url: '/Emp/' + id
+        }).then(function (data) {
             $scope.datas = data;
-        },function (error){
+        }, function (error) {
             console.log('Error: ' + data);
         });
     };
-    $scope.updateUser = function (id) {
+    $scope.updateUser = function (users) {
 
-        $http.get('/Emp/' + id)
-            .success(function (data) {
-                $scope.users = data;
-                console.log(data);
-                $scope.formData = {
-                    _id: $scope.users._id,
-                    name: $scope.users.EmpName,
-                    salary: $scope.users.EmpSalary,
-                    dept: $scope.users.EmpDept,
-                    date: $scope.users.EmpJdate
+            var modalInstance = $modal.open({
+            templateUrl: 'Edit.html',
+            controller: ModalInstanceCtrl,
+            resolve: {
+                users: function () {
+                    debugger
+                    return users;
                 }
-                $scope.flag = 1;
-                console.log(data);
-            });
+            }
+        });
 
 
+    };
+    $scope.photoUpload = function (files) {
+        $scope.imgFile = files[0];
     };
 
     $scope.photoUpload = function (files) {
         $scope.imgFile = files[0];
     };
-
-
     $scope.createUser = function () {
 
         var file = $scope.myFile;
         var uploadUrl = "/Emp";
-        var fd = new FormData();
-
-        fd.append('EmpName', $scope.formData.name);
-        fd.append('EmpImage', file);
-        fd.append('EmpEmail', $scope.formData.email);
-        fd.append('EmpState', $scope.formData.State);
-        fd.append('EmpCity', $scope.formData.city);
-        fd.append('Empgender', $scope.formData.gender);
-        fd.append('EmpBOD', $scope.formData.date);
-        fd.append('EmpActive', $scope.formData.active);
-
-        if ($scope.flag == 1) {
-            $scope.flag = 0;
-
-            $http.put('/Emp/' + $scope.formData._id, fd)
-                .success(function (data) {
-                    console.log(data);
-                    console.log('Data updated');
-                })
-                .error(function (data) {
-                    console.log('Error: ' + data);
-                });
-        }
-        else {
+        var fd = new FormData($scope.formData.state);
 
             var file = $scope.myFile;
             var uploadUrl = "/Emp";
@@ -130,38 +104,69 @@ function registerController($scope, $http) {
             fd.append('EmpName', $scope.formData.name);
             fd.append('EmpImage', file);
             fd.append('EmpEmail', $scope.formData.email);
-            fd.append('EmpState', $scope.formData.state);
+            fd.append('EmpState', 'Panjab');
             fd.append('EmpCity', $scope.formData.city);
             fd.append('Empgender', $scope.formData.gender);
             fd.append('EmpBOD', $scope.formData.date);
             fd.append('EmpActive', $scope.formData.active);
 
-            $http({
-                method: 'POST',
-                url: '/Emp'
-            }).then(function (success){
-                $scope.datas = data;
-            },function (error){
-                console.log('Error: ' + data);
-            });
 
             $http.post(uploadUrl, fd, {
                 transformRequest: angular.identity,
                 headers: {'Content-Type': undefined}
-            })
-                .success(function () {
-                    $scope.formData.name = "";
-                    $scope.formData.email = "";
-                    $scope.formData.state = "";
-                    $scope.formData.city = "";
-                    $scope.formData.date = "";
-                    console.log('Data inserted');
-                    console.log("success!!");
-                })
-                .error(function () {
-                    console.log("error!!");
-                });
-        }
+            }).then(function (success) {
+                $scope.formData.name = "";
+                $scope.formData.email = "";
+                $scope.formData.state = "";
+                $scope.formData.city = "";
+                $scope.formData.date = "";
+                $scope.datas = success.data;
+                console.log('Data inserted');
+                //console.log(success.data);
+            }, function (error) {
+                console.log('Error: ');
+            });
+
+
 
     };
 }
+
+ModalInstanceCtrl.$inject = ['$scope','$http','$modalInstance','users']
+function ModalInstanceCtrl ($scope, $http, $modalInstance, users)
+{
+    $scope.formdata=[];
+    $scope.formdata=users?angular.copy(users):{};
+    alert($scope.formdata.EmpName);
+    $scope.update = function () {
+
+        var fd = new FormData();
+
+        fd.append('EmpName', $scope.formdata.EmpName);
+        fd.append('EmpImage', file);
+        fd.append('EmpEmail', $scope.formdata.EmpEmail);
+        fd.append('EmpState', 'Panjab');
+        fd.append('EmpCity', $scope.formdata.EmpCity);
+        fd.append('Empgender', $scope.formdata.Empgender);
+        fd.append('EmpBOD', $scope.formdata.EmpBOD);
+        fd.append('EmpActive', $scope.formdata.EmpActive);
+
+        Upload.upload(fd,{
+            url: '/Upload_Image/EmpProfilePic/' + $scope._id,
+            method: 'PUT'
+        }).then(function (response) {
+
+            $scope.formData=response.data
+
+            $modalInstance.dismiss();
+
+
+        })
+    };
+
+    $scope.cancel = function () {
+        $modalInstance.dismiss('cancel');
+    };
+};
+
+

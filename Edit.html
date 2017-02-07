@@ -1,0 +1,91 @@
+<div ng-controller="registerController">
+
+    <div>
+        <div>
+            <div class="card">
+                <div class="card-header">
+                    <h1><strong>Update Information</strong></h1>
+                </div>
+                <div class="card-block">
+                    <form action="" method="post" enctype="multipart/form-data" class="form-horizontal ">
+                        <div class="form-group row">
+                            <label class="col-md-3 form-control-label">Username</label>
+                            <div class="col-md-9">
+                                <input type="text" name="text-input" class="form-control" placeholder="Enter name"
+                                       ng-model="formdata.EmpName" required>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 form-control-label" for="email-input">Email Input</label>
+                            <div class="col-md-9">
+                                <input type="email" id="email-input" name="email-input" class="form-control"
+                                       placeholder="Enter Email" ng-model="formdata.EmpEmail" required>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 form-control-label">Birth Date</label>
+                            <div class="col-md-9">
+                                <input type="date" id="bod" name="text-input" class="form-control"
+                                       placeholder="Choose a date" ng-model='formdata.EmpBOD' required>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 form-control-label" for="select">State</label>
+                            <div class="col-md-9">
+                                <select class="form-control" size="1"
+                                        ng-model="formdata.EmpState"
+                                        ng-options="s._id as s.State_Name for s in slists"
+                                        ng-change="FillCity(formdata.EmpState)">
+                                    <option value="">--State--</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 form-control-label" for="select">City</label>
+                            <div class="col-md-9">
+                                <select id="city" name="select" class="form-control" size="1" ng-model="formdata.EmpCity">
+                                    <option value="">--City--</option>
+                                    <option ng-repeat="c in citys" value="{{c.City_Name}}">{{c.City_Name}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 form-control-label">Gender</label>
+                            <div class="col-md-9">
+                                <label class="radio-inline" for="inline-radio1">
+                                    <input type="radio" id="inline-radio1" ng-model='formdata.Empgender'
+                                           ng-value='"Female"' name="rdogender">Female
+                                </label>
+                                <label class="radio-inline" for="inline-radio2">
+                                    <input type="radio" id="inline-radio2" ng-model='formdata.Empgender'
+                                           ng-value='"Female"' name="rdogender">Male
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 form-control-label" for="file-input">Profile</label>
+                            <div class="col-md-9">
+                                <input type="file" id="file-input" name="file1" file-model="myFile" required>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 form-control-label">Active</label>
+                            <div class="col-md-9">
+                                <label class="checkbox-inline" for="inline-checkbox1">
+                                    <input type="checkbox" id="inline-checkbox1" ng-model="formdata.EmpActive">
+                                </label>
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+                <div class="card-footer">
+                    <button type="submit" class="btn btn-sm btn-primary" ng-click="update()"><i class="fa fa-dot-circle-o"></i> Update
+                    </button>
+                    <button type="reset" class="btn btn-sm btn-danger" ng-click="cancel()"><i class="fa fa-ban"></i>Cancle</button>
+                </div>
+            </div>
+        </div>
+
+
+    </div>

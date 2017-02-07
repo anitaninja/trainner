@@ -1,0 +1,52 @@
+    <div class="row">
+    <div class="col-md-6">
+        <div class="card">
+                    <div class="card-header">
+                        <h1><strong>Customer Entry</strong></h1><br><br>
+                    </div><fieldset>
+                    <div class="card-block">
+                        <form action="" method="post" enctype="multipart/form-data" class="form-horizontal "
+                              ng-submit="createUser()">
+                            <div class="form-group row">
+                                <label class="col-md-3 form-control-label">Username</label>
+                                <div class="col-md-9">
+                                    <input type="text" name="text-input" class="form-control" placeholder="Enter name"
+                                           ng-model="formData.name" required>
+                                </div>
+                            </div>
+
+
+                            <div class="form-group row">
+                                <label class="col-md-3 form-control-label" for="select">State</label>
+                                <div class="col-md-9">
+                                    <select class="form-control" size="1"
+                                            ng-model="formData.state"
+                                            ng-options="s._id as s.State_Name for s in slists"
+                                            ng-change="FillCity(formData.state)">
+                                        <option value="">--State--</option>
+                                    </select>
+                                </div>
+                            </div>
+
+
+                            <div class="form-group row">
+                                <label class="col-md-3 form-control-label" for="file-input">Profile</label>
+                                <div class="col-md-9">
+                                    <input type="file" id="file-input" name="file1" file-model="myFile" required>
+                                </div>
+                            </div>
+
+
+                        </form>
+                    </div>
+                </fieldset>
+                    <div class="card-footer">
+                        <button type="submit" class="btn btn-sm btn-primary"><i class="fa fa-dot-circle-o"></i> Submit
+                        </button>
+                        <button type="reset" class="btn btn-sm btn-danger"><i class="fa fa-ban"></i> Reset</button>
+                    </div>
+
+        </div>
+    </div>
+
+</div>

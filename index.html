@@ -1,74 +1,39 @@
-<!--
- * GenesisUI - Bootstrap 4 Admin Template
- * @version v1.5.13
- * @link https://genesisui.com
- * Copyright (c) 2016 creativeLabs Łukasz Holeczek
- * @license Commercial
- -->
 <!DOCTYPE html>
-<html lang="en" ng-app="app">
+
+<!-- define angular app -->
+<html ng-app="scotchApp">
 
 <head>
+    <!-- SCROLLS -->
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.0/css/font-awesome.css" />
 
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="Real - Bootstrap 4 Admin Template">
-    <meta name="author" content="Łukasz Holeczek">
-    <meta name="keyword" content="Bootstrap,Admin,Template,Open,Source,AngularJS,Angular,Angular2,jQuery,CSS,HTML,RWD,Dashboard">
-    <link rel="shortcut icon" href="img/favicon.png">
-
-    <title>Real - Bootstrap 4 Admin Template</title>
-
-    <!-- Main styles for this application -->
-    <link href="css/style.css" rel="stylesheet">
-    <!--<script src="../node_modules/angular/angular.js"></script>-->
-
+    <!-- SPELLS -->
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular-route.js"></script>
+    <script src="script.js"></script>
 </head>
 
-<body class="navbar-fixed sidebar-nav fixed-nav">
+<!-- define angular controller -->
+<body ng-controller="mainController">
 
-<!-- User Interface -->
-<ui-view></ui-view>
+<nav class="navbar navbar-default">
+    <div class="container">
+        <div class="navbar-header">
+        </div>
 
-<!-- Bootstrap and necessary plugins -->
-<script src="bower_components/jquery/dist/jquery.min.js"></script>
-<script src="bower_components/tether/dist/js/tether.min.js"></script>
-<script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+        <ul class="nav navbar-nav navbar-right">
+            <!--<li><a href="#"><i class="fa fa-home"></i> Home</a></li>-->
+            <li><a href="#about"><h3>LogIn</h3></a></li>
+        </ul>
+    </div>
+</nav>
 
-<!-- AngularJS -->
-<script src="bower_components/angular/angular.min.js"></script>
+<div id="main">
 
-<!-- AngularJS plugins -->
-<script src="bower_components/angular-animate/angular-animate.min.js"></script>
-<script src="bower_components/angular-sanitize/angular-sanitize.min.js"></script>
-<script src="bower_components/angular-ui-router/release/angular-ui-router.min.js"></script>
-<script src="bower_components/oclazyload/dist/ocLazyLoad.min.js"></script>
-<script src="bower_components/angular-translate/angular-translate.min.js"></script>
-<script src="bower_components/angular-breadcrumb/dist/angular-breadcrumb.min.js"></script>
-<script src="bower_components/angular-loading-bar/build/loading-bar.min.js"></script>
+    <div ng-view></div>
 
-<script src="js/controllers/Empapp.js" type="text/javascript"></script>
-<script src="js/controllers/Empcontroller.js" type="text/javascript"></script>
-<!--<script src="../node_modules/angular/angular.js"></script>-->
-
-<!-- AngularJS Real App scripts -->
-
-<script src="js/app.js"></script>
-
-<script src="js/routes.js"></script>
-
-<script src="js/demo/routes.js"></script>
-<script src="js/controllers.js"></script>
-<script src="js/directives.js"></script>
-<script src="js/translations.js"></script>
-
-
-
-
-
-
-
+</div>
 </body>
 
 </html>
