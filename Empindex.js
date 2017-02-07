@@ -1,5 +1,17 @@
 var express = require('express');
 var app = express();
+app.all('*', function(req, res, next) {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'PUT, GET, POST, DELETE, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'accept, content-type, x-parse-application-id, x-parse-rest-api-key, x-parse-session-token');
+    // intercept OPTIONS method
+    if ('OPTIONS' == req.method) {
+        res.send(200);
+    }
+    else {
+        next();
+    }
+});
 var router = express.Router();
 var multer = require('multer');
 
@@ -15,34 +27,19 @@ app.use('./public', express.static(__dirname + './public'));
 
 var mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost:27017/Image'); // connect to our database
-var Img = require('./moduls/Empmongo');
-var State = require('./moduls/Empstate');
-var City = require('./moduls/Empcity');
-
-// Load the full build.
-var _ = require('lodash');
-// Load the core build.
-var _ = require('lodash/core');
-// Load the FP build for immutable auto-curried iteratee-first data-last methods.
-var fp = require('lodash/fp');
-
-// Load method categories.
-var array = require('lodash/array');
-var object = require('lodash/fp/object');
-
-// Cherry-pick methods for smaller browserify/rollup/webpack bundles.
-var at = require('lodash/at');
-var curryN = require('lodash/fp/curryN');
+var Img = require('./Empmongo');
+var State = require('./Empstate');
+var City = require('./Empcity');
 
 var storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, './Upload_Image/EmpProfilePic');
+        cb(null, './public/ProductImages');
     },
     filename: function (req, file, cb) {
         console.log("----");
         var filename = Date.now() + file.originalname;
-        req.body.EmpImage = filename;
-        console.log(req.body.EmpImage);
+        req.body.CImage = filename;
+        console.log(req.body.CImage);
         cb(null, filename);
     }
 });
@@ -124,8 +121,8 @@ router.route('/Emp')
         Img.find().exec(function (err, result) {
             if (err)
                 res.send(err);
-            res.send(result);
-            console.log(result);
+
+            res.json(result);
         });
 
     })
@@ -134,23 +131,52 @@ router.route('/Emp')
         var files = req.files;
         console.log(files);
         var img = new Img();
-        img.EmpName = req.body.EmpName;
-        img.EmpImage=req.body.EmpImage;
-        img.EmpEmail = req.body.EmpEmail;
-        img.EmpState = req.body.EmpState;
-        img.EmpCity=req.body.EmpCity;
-        img.Empgender=req.body.Empgender;
-        img.EmpBOD=req.body.EmpBOD;
-        img.EmpActive=req.body.EmpActive;
+        img.CName = req.body.CName;
+        img.CImage=req.body.CImage;
+        img.CPName = req.body.CPName;
+
 
 
         img.save(function (err) {
             if (err)
                 res.send(err);
-            res.send("Employ Entry Done !!!! ");
+            res.send("Customer Entry Done !!!! ");
         });
     });
 
+router.put('/Emp/:id', function (req, res) {
+
+    Img.findById(req.params.id, function (err, img) {
+        img.CName = req.body.CName;
+        img.CImage=req.body.CImage;
+        img.CPName = req.body.CPName;
+        img.save(function (err) {
+            if (err)
+                res.send(err);
+            else
+                res.json(img);
+        });
+
+    });
+});
+
+// router.put( '/Emp/:id', function( req, res ) {
+//      Img.findById( req.params.id, function( err, img ) {
+//         img.CName = req.body.CName;
+//         img.CImage=req.body.CImage;
+//         img.CPName = req.body.CPName;
+//
+//        img.save( function( err ) {
+//             if( !err ) {
+//                 console.log( ' updated' );
+//                 return res.send( img );
+//             } else {
+//                 console.log( err );
+//                 return res.send('ERROR');
+//             }
+//         });
+//     });
+// });
 router.delete('/Emp/:id', function (req, res) {
     var img = new Img();
     Img.remove({_id: req.params.id},
@@ -161,7 +187,15 @@ router.delete('/Emp/:id', function (req, res) {
             res.json({message: 'Successfully deleted'});
         });
 });
-
+// router.get('/City/:State_Id', function (req, res, next) {
+//     City.findById(req.params.id, function (err, user) {
+//         if (err)
+//             res.send(err);
+//
+//         res.json(user);
+//     });
+//
+// })
 router.get('/Emp/:id', function (req, res, next) {
     Img.findById(req.params.id, function (err, user) {
         if (err)
@@ -171,10 +205,10 @@ router.get('/Emp/:id', function (req, res, next) {
     });
 
 })
-router.route('/EmpDataEntry')
-    .get(function (req, res, next) {
-        res.sendfile(__dirname +'/public' +'/views'+'/page'+ '/register.html');
-    });
+// router.route('/')
+//     .get(function (req, res, next) {
+//         res.sendfile(__dirname + '/index.html');
+//     });
 
 app.use('/', router);
 app.listen(3000);

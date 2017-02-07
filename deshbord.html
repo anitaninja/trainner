@@ -1,12 +1,12 @@
 <div>
-    <center><h2>----------------------------DeshBord-------------------------------------</h2>
+    <center><hr><h2>Customer Information</h2></hr>
 
 
     <br><br>
     <hr>
     <br><br>
-    <table border="1px">
-        <tr><th> <button name="Edit" class="btn btn-sm btn-primary btn-block" ng-click="adduser()">ADD</button><br></th></tr>
+    <table border="1px" class="table">
+        <tr><th> <button name="Edit" class="btn btn-info btn-sm" ng-click="adduser()">ADD</button><br></th></tr>
         <tr>
             <th>Customer Name</th>
             <th>Profile</th>
@@ -16,17 +16,18 @@
         </tr>
         <tr ng-repeat="i in datas">
             <!--<td>{{i._id}}</td>-->
-            <td>{{i.EmpName}}</td>
-            <td><img src="./ProductImages/{{i.EmpImage}}"/></td>
-            <td>{{i.EmpState}}</td>
+            <td>{{i.CName}}</td>
+
+            <td><img src="./public/ProductImages{{i.CImage}}"/></td>
+            <td>{{i.CPName}}</td>
             <td>
                 <div ng-app="modalApp">
-                    <button name="Edit" class="btn btn-sm btn-primary btn-block" ui-sref="Modal.confirmAddToCart">Edit</button>
+                    <button name="Edit" class="btn btn-info btn-sm" ng-click="updateUser(i)">Edit</button>
                     <div ui-view="modal" autoscroll="false"></div>
                 </div>
             </td>
             <td>
-                <button name="delete" class="btn btn-sm btn-primary btn-block" ng-click="deleteUser(i._id)">Delete</button>
+                <button name="delete" class="btn btn-info btn-sm" ng-click="deleteUser(i._id)">Delete</button>
             </td>
 
 

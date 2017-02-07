@@ -4,11 +4,10 @@
 <div class="modal-body" id="modal-body">
     <fieldset>
 
-        <form method="post" enctype="multipart/form-data" class="form-horizontal ">
+        <form action="" method="post" enctype="multipart/form-data" class="form-horizontal ">
             <div class="form-group row">
                 <label class="col-md-3 form-control-label">Username</label>
                 <div class="col-md-9">
-
                     <input type="text" name="CName" list="CName" class="form-control" placeholder="Enter name"
                            ng-model="formData.CName" required>
                     <datalist id="CName" ng-repeat="c in datas" >
@@ -18,9 +17,9 @@
             </div>
 
             <div class="form-group row">
-                <label class="col-md-3 form-control-label">Profile</label>
+                <label class="col-md-3 form-control-label" for="file-input">Profile</label>
                 <div class="col-md-9">
-                    <input type="file" name="file1" file-model="myFile" required>
+                    <input type="file" id="file-input" name="file1" file-model="myFile" required>
                 </div>
             </div>
 
@@ -41,7 +40,7 @@
     </fieldset>
 </div>
 <div class="modal-footer">
-    <button class="btn btn-primary" type="submit" ng-click="saved()">OK</button>
+    <button class="btn btn-primary" type="submit" ng-click="updated()">Update</button>
     <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
 </div>
 
